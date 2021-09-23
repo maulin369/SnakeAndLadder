@@ -1,0 +1,169 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+
+import java.util.Random;
+
+class Snake {
+    private int start;
+    private int end;
+
+    public Snake(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+}
+
+class Ladder {
+    private int start;
+    private int end;
+
+    public Ladder(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+}
+
+class SnakeAndLadderBoard {
+    private List < Snake > snakes;
+    private List < Ladder > ladders;
+    private int playerPieces;
+
+    public SnakeAndLadderBoard() {
+        this.snakes = new ArrayList < Snake > ();
+        this.ladders = new ArrayList < Ladder > ();
+        this.playerPieces = 0;
+    }
+
+    public List < Snake > getSnakes() {
+        return snakes;
+    }
+
+    public void setSnakes(List < Snake > snakes) {
+        this.snakes = snakes;
+    }
+
+    public List < Ladder > getLadders() {
+        return ladders;
+    }
+
+    public void setLadders(List < Ladder > ladders) {
+        this.ladders = ladders;
+    }
+
+    public int getPlayerPieces() {
+        return playerPieces;
+    }
+
+    public void setPlayerPieces(int playerPieces) {
+        this.playerPieces = playerPieces;
+    }
+
+    public int getNewPosition(int newPosition) {
+        int previousPosition;
+        if (newPosition > 100)
+            return this.playerPieces;
+        do {
+            previousPosition = newPosition;
+            for (Snake snake: this.getSnakes()) {
+                if (snake.getStart() == newPosition) {
+                    newPosition = snake.getEnd();
+                    System.out.println("you are at snake");
+                    System.out.println("new possition " + newPosition);
+                }
+            }
+
+            for (Ladder ladder: this.getLadders()) {
+                if (ladder.getStart() == newPosition) {
+                    newPosition = ladder.getEnd();
+                    System.out.println("you are at ladder");
+                    System.out.println("new possition " + newPosition);
+                }
+            }
+        }
+        while (newPosition != previousPosition);
+        this.playerPieces = newPosition;
+        return newPosition;
+    }
+}
+
+public class SnakeAndLadder {
+
+    public static SnakeAndLadderBoard board = new SnakeAndLadderBoard();
+    public static int roll() {
+        return new Random().nextInt(6) + 1;
+    }
+    public static void setBoard() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter no of snakes");
+        int noOfSnakes = sc.nextInt();
+        List < Snake > snakes = new ArrayList < Snake > ();
+        for (int i = 0; i < noOfSnakes; i++) {
+            System.out.println("Enter startSnake endSnake");
+            snakes.add(new Snake(sc.nextInt(), sc.nextInt()));
+        }
+        System.out.println("Enter no of Ladder");
+        int noOfLadders = sc.nextInt();
+        List < Ladder > ladders = new ArrayList < Ladder > ();
+        for (int i = 0; i < noOfLadders; i++) {
+            System.out.println("Enter startLadders endLadders");
+            ladders.add(new Ladder(sc.nextInt(), sc.nextInt()));
+        }
+    }
+
+    public static void play() {
+        Scanner sc = new Scanner(System.in);
+        board.setPlayerPieces(0);
+        System.out.println("Welcome to Snake and Ladder game");
+        int possition = 0;
+        do {
+            System.out.println("\nYou are at " + board.getPlayerPieces());
+            System.out.println("press key to dice roll");
+            sc.next();
+            possition = roll();
+            System.out.println("Dice rolled: " + possition);
+            possition =
+                board.getNewPosition(board.getPlayerPieces() + possition);
+        }
+        while (possition != 100);
+        if (possition == 100) {
+            System.out.println("You Win");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int role = 0;
+
+        do {
+            System.out.println("Select role");
+            System.out.println("1. Admin");
+            System.out.println("2. Player");
+            System.out.println("3. Exit");
+            role = sc.nextInt();
+
+            if (role == 1)
+                setBoard();
+            else if (role == 2)
+                play();
+        }
+        while (role == 1 || role == 2);
+    }
+}
